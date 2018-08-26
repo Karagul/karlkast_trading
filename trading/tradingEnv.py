@@ -23,14 +23,14 @@ class TradingEnv(gym.Env):
     self.enterUpScoreCol = 'prevBuyDiff'
     self.enterDownScoreCol = 'prevSellDiff'
 
-    self._reset()
+    self.reset()
 	
 
-  def _seed(self, seed=None):
+  def seed(self, seed=None):
     self.np_random, seed = seeding.np_random(seed)
     return [seed]
 
-  def _step(self, action):
+  def step(self, action):
     reward = 0
     ledgerDiff = 0
     finished = False
@@ -68,7 +68,7 @@ class TradingEnv(gym.Env):
     self.step += 1
     return observations, reward, finished, info
 
-  def _reset(self):
+  def reset(self):
     self.data = np.zeros(1)  
     #change each step
     self.step = 0
@@ -88,21 +88,21 @@ class TradingEnv(gym.Env):
     scale = (max_val - min_val) / 2.0
     return series.apply(lambda x:((x - min_val) / scale) - 1.0)
 
-  def setupEnv(dataDir):
+  def setupEnv(self, dataDir):
     if dataDir != '':
       print('dataDir:' + dataDir)
       self.files = os.listdir(dataDir)
       print(self.files)
       self.currentFile = self.files[randint(0, len(self.files))]
-      
-      self.dataRaw = pd.read_csv(self.currentFile, header=0, skiprows=1)
-      self.data = self._data_setup(self.dataRaw)
+      print('Current File:' + self.currentFile)
+      self.dataRaw = pd.read_csv(dataDir + self.currentFile, header=0, skiprows=1)
+      self.data = self.data_setup(self.dataRaw)
 	  
       print('Read in: [' + self.currentFile + '] - %s' % (self.data.shape,))
     else:
       self.data = np.zeros(1)   
 	
-  def _data_setup(self, dataframe):
+  def data_setup(self, dataframe):
     output_targets = pd.DataFrame()
     #Hour,Month,buy,buyTotal,sell,sellTotal,spread,prevBuyDiff,prevSellDiff,avgBuy,avgBuyTotal,avgSell,avgSellTotal,avgSpread,ticksPerMinute,avgTicksPerMinute,timeDiff
     output_targets["Hour"] = self.linear_scale(dataframe["Hour"])

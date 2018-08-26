@@ -1,3 +1,11 @@
+
+#! pip3 install --upgrade tensorflow
+#! pip3 install gym
+#! pip3 install numpy
+#! pip3 install matplotlib
+
+
+
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import numpy as np
@@ -10,7 +18,11 @@ except:
     xrange = range
 	
 env = gym.make('TradingEnv-v0')
-env.setupEnv('D:\Data\Agent-127.0.0.1-3000\MQL5\Files')
+
+#path = 'D:\Data\Agent-127.0.0.1-3000\MQL5\Files'
+path = r'C:\Users\klilley\AppData\Roaming\MetaQuotes\Tester\D0E8209F77C8CF37AD8BF550E51FF075\Agent-127.0.0.1-3000\MQL5\Files\\'
+print(path)
+env.setupEnv(path)
 gamma = 0.99
 
 """ take 1D float array of rewards and compute discounted reward """
@@ -86,7 +98,7 @@ with tf.Session() as sess:
         
     while i < total_episodes:
         s = env.reset()
-        env.setupEnv('D:\Data\Agent-127.0.0.1-3000\MQL5\Files')
+        env.setupEnv(path) #'D:\Data\Agent-127.0.0.1-3000\MQL5\Files')
         running_reward = 0
         ep_history = []
         for j in range(max_ep):
